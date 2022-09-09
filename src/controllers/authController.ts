@@ -25,11 +25,17 @@ router.post("/signin", async (req, res) => {
         })
         if (user){
             const sucess = await bcrypt.compare(password, user.password)
-
             if (sucess){
-                if(env.SECRET_KEY){
-                    var token = jwt.sign({userID: user.id}, env.SECRET_KEY, {expiresIn: 300});
-                    return res.status(200).send({token, username:user.username})
+                if(env.SECRET_KEY && env.REFRESH_KEY){
+                    const token = jwt.sign({userID: user.id, username: user.username}, env.SECRET_KEY, {expiresIn: 5});
+                    const refreshToken = jwt.sign({userID: user.id, username: user.username} , env.REFRESH_KEY, {expiresIn: 60});
+                    res.setHeader('authorization', token);
+                    // res.cookie('refresh_token', refreshToken,{
+                    //     maxAge: 3.154e10,
+                    //     httpOnly: true
+                    // });
+
+                    return res.status(200).send({token, refreshToken,username:user.username})
                 }
             }else{
                 return res.status(400).send({error: "invalid password!"})

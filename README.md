@@ -8,8 +8,6 @@ cd aula-univem-api
 
 npm i
 
-cd src
-
 touch .env
 ```
 #Configurar .ENV

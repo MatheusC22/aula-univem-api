@@ -1,11 +1,11 @@
 import express from 'express';
 import { env } from 'process';
 import bodyParser from 'body-parser';
-import { refresher } from './middlewares/refresherMiddleware';
+import cors from 'cors';
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
-app.use(refresher);
 require("./controllers/index")(app);
 
 app.listen(env.PORT)

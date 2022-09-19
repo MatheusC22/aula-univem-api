@@ -10,7 +10,7 @@ export const validateToken = (
     const token = req.headers['authorization'];
     if (token && env.SECRET_KEY){
         jwt.verify(token, env.SECRET_KEY, (err,decoded)=>{
-            if(err) return res.status(401).end()
+            if(err) return res.status(401).send(err).end()
     
             next();
         })

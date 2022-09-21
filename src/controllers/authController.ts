@@ -1,8 +1,8 @@
-import express, { Router } from 'express';
-import { prisma } from '../prisma';
 import bcrypt from 'bcrypt';
-import { env } from 'process';
+import express from 'express';
 import jwt from 'jsonwebtoken';
+import { env } from 'process';
+import { prisma } from '../prisma';
 
 const router = express.Router();
 
@@ -27,11 +27,9 @@ router.post("/signin", async (req, res) => {
             const sucess = await bcrypt.compare(password, user.password)
             if (sucess){
                 if(env.SECRET_KEY && env.REFRESH_KEY){
-                    const token = jwt.sign({userID: user.id, username: user.username}, env.SECRET_KEY, {expiresIn: 500});//expires in 5 minutes
-                    const refreshToken = jwt.sign({userID: user.id, username: user.username} , env.REFRESH_KEY, {expiresIn: 3600}); // expires in 1 hour
-                    res.setHeader('authorization', token);
+                    const token = jwt.sign({userID: user.id, username: user.username}, env.SECRET_KEY, {expiresIn: 5});
 
-                    return res.status(200).send({token, refreshToken,username:user.username})
+                    return res.status(200).send({token })
                 }
             }else{
                 return res.status(400).send({error: "invalid password!"})

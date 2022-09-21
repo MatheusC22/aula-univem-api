@@ -7,13 +7,14 @@ export const validateToken = (
     res: Response,
     next: NextFunction
 ) =>{
-    const token = req.headers['authorization'];
-    if (token && env.SECRET_KEY){
-        jwt.verify(token, env.SECRET_KEY, (err,decoded)=>{
-            if(err) return res.status(401).send(err).end()
-    
-            next();
-        })
+    const token = req.headers['authorization']?.split(' ')[1];
+    if (!token || !env.SECRET_KEY) {
+        return res.sendStatus(401);
     }
+
+    jwt.verify(token, env.SECRET_KEY, (err,decoded)=>{
+        if(err) return res.status(401).send(err).end()
+    });
     
+    next();
 }
